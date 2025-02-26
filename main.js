@@ -64,7 +64,7 @@ function playGame() {
     return false;
   }
 
-  while (humanScore < 2 && computerScore < 2) {
+  while (humanScore < 5 && computerScore < 5) {
     const humanSelection = getHumanChoice();
     const computerSelection = getComputerChoice();
     if(playRound(humanSelection, computerSelection)){
@@ -72,7 +72,7 @@ function playGame() {
     }
   }
 
-  if (humanScore === 5)
+  if (humanScore>computerScore)
     console.log(
       "You Win! Your Score: " + humanScore + "Computer Score: " + computerScore
     );
