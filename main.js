@@ -1,10 +1,5 @@
 console.log("Welcome to Rock-Paper-Scissors console edition!");
 
-//START OF GLOBAL SCOPE
-let humanScore = 0;
-let computerScore = 0;
-//END OF GLOBAL SCOPE
-
 function getComputerChoice() {
   let number = Math.floor(Math.random() * 3 + 1);
   return number === 1 ? "rock" : number === 2 ? "paper" : "scissors";
@@ -15,56 +10,79 @@ function getHumanChoice() {
   return choice;
 }
 
-const humanSelection = getHumanChoice();
-const computerSelection = getComputerChoice();
+function playGame() {
+  let humanScore = 0;
+  let computerScore = 0;
 
-function playRound(humanChoice, computerChoice) {
-  if (
-    !(
-      humanChoice.toLowerCase() === "rock" ||
-      humanChoice.toLowerCase() === "paper" ||
-      humanChoice.toLowerCase() === "scissors"
+  function playRound(humanChoice, computerChoice) {
+    if (
+      !(
+        humanChoice.toLowerCase() === "rock" ||
+        humanChoice.toLowerCase() === "paper" ||
+        humanChoice.toLowerCase() === "scissors"
+      )
     )
-  )
-    return console.log("Invalid choice!: " + humanChoice);
-  else {
-    console.log("Computer chose: " + computerChoice);
-    switch (humanChoice) {
-      case "rock":
-        if (computerChoice === "rock") console.log("It's a tie!");
-        else if (computerChoice === "paper") {
-          console.log("You lost! :(");
-          computerScore++;
-        } else {
-          console.log("You won! :)");
-          humanScore++;
-        }
-        break;
-      case "paper":
-        if (computerChoice === "rock") {
-          console.log("You won! :)");
-          humanScore++;
-        } else if (computerChoice === "paper") {
-          console.log("It's a tie!");
-        } else {
-          console.log("You lost! :(");
-          computerScore++;
-        }
-        break;
-      case "scissors":
-        if (computerChoice === "rock") {
-          console.log("You lost! :(");
-          computerScore++;
-        } else if (computerChoice === "paper") {
-          console.log("You won! :)");
-          humanScore++;
-        } else {
-          console.log("It's a tie!");
-        }
+      return true;
+    else {
+      console.log("Computer chose: " + computerChoice);
+      switch (humanChoice.toLowerCase()) {
+        case "rock":
+          if (computerChoice === "rock") console.log("It's a tie!");
+          else if (computerChoice === "paper") {
+            console.log("You lost this round! :(");
+            computerScore++;
+          } else {
+            console.log("You won this round! :)");
+            humanScore++;
+          }
+          break;
+        case "paper":
+          if (computerChoice === "rock") {
+            console.log("You won this round! :)");
+            humanScore++;
+          } else if (computerChoice === "paper") {
+            console.log("It's a tie!");
+          } else {
+            console.log("You lost this round! :(");
+            computerScore++;
+          }
+          break;
+        case "scissors":
+          if (computerChoice === "rock") {
+            console.log("You lost this round! :(");
+            computerScore++;
+          } else if (computerChoice === "paper") {
+            console.log("You won this round! :)");
+            humanScore++;
+          } else {
+            console.log("It's a tie!");
+          }
+      }
+    }
+    console.log("Your Score: " + humanScore);
+    console.log("Computer Score: " + computerScore);
+    return false;
+  }
+
+  while (humanScore < 2 && computerScore < 2) {
+    const humanSelection = getHumanChoice();
+    const computerSelection = getComputerChoice();
+    if(playRound(humanSelection, computerSelection)){
+        console.log("Invalid choice! You typed: " + humanSelection);
     }
   }
-  console.log("Your Score: " + humanScore);
-  console.log("Computer Score: " + computerScore);
+
+  if (humanScore === 5)
+    console.log(
+      "You Win! Your Score: " + humanScore + "Computer Score: " + computerScore
+    );
+  else
+    console.log(
+      "You Lose :( Your Score: " +
+        humanScore +
+        " and Computer Score: " +
+        computerScore
+    );
 }
 
-playRound(humanSelection, computerSelection);
+playGame();
