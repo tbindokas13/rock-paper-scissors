@@ -1,88 +1,86 @@
 console.log("Welcome to Rock-Paper-Scissors console edition!");
 
+//START GLOBALS
+let humanScore = 0;
+let computerScore = 0;
+let roundNumber = 3; //To do: Implement logic for the user to set (First to # or Best out of #)
+//END GLOBALS
+
 function getComputerChoice() {
   let number = Math.floor(Math.random() * 3 + 1);
   return number === 1 ? "rock" : number === 2 ? "paper" : "scissors";
 }
 
-function getHumanChoice() {
-  let choice = prompt("Please pick: Rock, Paper or Scissors");
-  return choice;
+//Play a round of rock-paper-scissors when a button is clicked
+const buttonList = document.querySelectorAll("button");
+const scoreList = document.querySelector("#score");
+
+
+function initializeButtons(){
+  buttonList.forEach(button => {
+    button.disabled=false;
+    button.addEventListener("click", playRound);
+    });
 }
 
-function playGame() {
-  let humanScore = 0;
-  let computerScore = 0;
-
-  function playRound(humanChoice, computerChoice) {
-    if (
-      !(
-        humanChoice.toLowerCase() === "rock" ||
-        humanChoice.toLowerCase() === "paper" ||
-        humanChoice.toLowerCase() === "scissors"
-      )
-    )
-      return true;
-    else {
-      console.log("Computer chose: " + computerChoice);
-      switch (humanChoice.toLowerCase()) {
-        case "rock":
-          if (computerChoice === "rock") console.log("It's a tie!");
-          else if (computerChoice === "paper") {
-            console.log("You lost this round! :(");
-            computerScore++;
-          } else {
-            console.log("You won this round! :)");
-            humanScore++;
-          }
-          break;
-        case "paper":
-          if (computerChoice === "rock") {
-            console.log("You won this round! :)");
-            humanScore++;
-          } else if (computerChoice === "paper") {
-            console.log("It's a tie!");
-          } else {
-            console.log("You lost this round! :(");
-            computerScore++;
-          }
-          break;
-        case "scissors":
-          if (computerChoice === "rock") {
-            console.log("You lost this round! :(");
-            computerScore++;
-          } else if (computerChoice === "paper") {
-            console.log("You won this round! :)");
-            humanScore++;
-          } else {
-            console.log("It's a tie!");
-          }
-      }
-    }
-    console.log("Your Score: " + humanScore);
-    console.log("Computer Score: " + computerScore);
-    return false;
-  }
-
-  while (humanScore < 5 && computerScore < 5) {
-    const humanSelection = getHumanChoice();
-    const computerSelection = getComputerChoice();
-    if(playRound(humanSelection, computerSelection)){
-        console.log("Invalid choice! You typed: " + humanSelection);
-    }
-  }
-
-  if (humanScore>computerScore)
-    console.log(
-      "You Win! Your Score: " + humanScore + "Computer Score: " + computerScore
-    );
-  else
-    console.log(
-      "You Lose :( Your Score: " +
-        humanScore +
-        " and Computer Score: " +
-        computerScore
-    );
+function doesHumanWinRound(humanChoice, computerChoice) {
+  console.log("Computer chose: " + computerChoice);
+  if (humanChoice.toLowerCase() === "rock") return (computerChoice === "scissors") ? true : false;
+  else if (humanChoice.toLowerCase() === "paper") return (computerChoice === "rock") ? true : false;
+  else return (computerChoice === "paper") ? true : false;
 }
 
-playGame();
+function playRound() {
+  const humanChoice=this.textContent;
+  const computerChoice=getComputerChoice();
+  if (humanChoice.toLowerCase() !== computerChoice.toLowerCase()) {
+    (doesHumanWinRound(humanChoice, computerChoice)) ? humanScore++ : computerScore++;
+  }
+  updateScoreBoard();
+  checkForGameOver();
+}
+
+function updateScoreBoard(){
+  scoreList.textContent=`Human Score: ${humanScore} | Computer Score: ${computerScore}`;
+}
+
+//I smell refactoring here
+function checkForGameOver(){
+  if(humanScore===roundNumber){
+    scoreList.textContent="You WIN! :)"
+    disableButtons();
+    addRestartButton();
+  }
+  else if(computerScore===roundNumber){
+    scoreList.textContent="You LOSE! :(";
+    disableButtons();
+    addRestartButton();
+  }
+}
+
+function disableButtons(){
+  buttonList.forEach(button => {
+    button.disabled=true;
+  })
+}
+
+function addRestartButton(){
+  const restartButton=document.createElement('button');
+  restartButton.setAttribute('id',"restartButton");
+  restartButton.textContent="Restart";
+  scoreList.insertAdjacentElement("afterend",restartButton);
+  restartButton.addEventListener("click",startGame);
+}
+
+function removeRestartButton() {
+  if (document.getElementById('restartButton')) document.getElementById('restartButton').remove();
+}
+
+function startGame(){
+  removeRestartButton();
+  humanScore=computerScore=0;
+  initializeButtons();
+  updateScoreBoard();
+}
+startGame();
+
